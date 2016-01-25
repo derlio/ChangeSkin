@@ -29,6 +29,11 @@ public class SkinAttrSupport
             if (attrValue.startsWith("@"))
             {
                 int id = Integer.parseInt(attrValue.substring(1));
+
+                if (id == 0) {
+                    continue;
+                }
+
                 String entryName = context.getResources().getResourceEntryName(id);
 
                 L.e("entryName = " + entryName);
