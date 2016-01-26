@@ -14,6 +14,7 @@ import com.zhy.changeskin.utils.PrefUtils;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,8 +22,7 @@ import java.util.Map;
 /**
  * Created by zhy on 15/9/22.
  */
-public class SkinManager
-{
+public class SkinManager {
     private Context mContext;
     private Resources mResources;
     private ResourceManager mResourceManager;
@@ -40,23 +40,19 @@ public class SkinManager
     private Map<ISkinChangedListener, List<SkinView>> mSkinViewMaps = new HashMap<ISkinChangedListener, List<SkinView>>();
     private List<ISkinChangedListener> mSkinChangedListeners = new ArrayList<ISkinChangedListener>();
 
-    private SkinManager()
-    {
+    private SkinManager() {
     }
 
-    private static class SingletonHolder
-    {
+    private static class SingletonHolder {
         static SkinManager sInstance = new SkinManager();
     }
 
-    public static SkinManager getInstance()
-    {
+    public static SkinManager getInstance() {
         return SingletonHolder.sInstance;
     }
 
 
-    public void init(Context context)
-    {
+    public void init(Context context) {
         mContext = context.getApplicationContext();
         mPrefUtils = new PrefUtils(mContext);
 
@@ -67,22 +63,19 @@ public class SkinManager
             return;
         File file = new File(skinPluginPath);
         if (!file.exists()) return;
-        try
-        {
+        try {
             loadPlugin(skinPluginPath, skinPluginPkg, mSuffix);
             mCurPluginPath = skinPluginPath;
             mCurPluginPkg = skinPluginPkg;
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             mPrefUtils.clear();
             e.printStackTrace();
         }
     }
 
 
-    private void loadPlugin(String skinPath, String skinPkgName, String suffix) throws Exception
-    {
-       //checkPluginParams(skinPath, skinPkgName);
+    private void loadPlugin(String skinPath, String skinPkgName, String suffix) throws Exception {
+        //checkPluginParams(skinPath, skinPkgName);
         AssetManager assetManager = AssetManager.class.newInstance();
         Method addAssetPath = assetManager.getClass().getMethod("addAssetPath", String.class);
         addAssetPath.invoke(assetManager, skinPath);
@@ -93,43 +86,33 @@ public class SkinManager
         usePlugin = true;
     }
 
-    private boolean checkPluginParams(String skinPath, String skinPkgName)
-    {
-        if (TextUtils.isEmpty(skinPath) || TextUtils.isEmpty(skinPkgName))
-        {
+    private boolean checkPluginParams(String skinPath, String skinPkgName) {
+        if (TextUtils.isEmpty(skinPath) || TextUtils.isEmpty(skinPkgName)) {
             return false;
         }
         return true;
     }
 
-    private void checkPluginParamsThrow(String skinPath, String skinPkgName)
-    {
-        if (!checkPluginParams(skinPath, skinPkgName))
-        {
+    private void checkPluginParamsThrow(String skinPath, String skinPkgName) {
+        if (!checkPluginParams(skinPath, skinPkgName)) {
             throw new IllegalArgumentException("skinPluginPath or skinPkgName can not be empty ! ");
         }
     }
 
 
-    public void removeAnySkin()
-    {
+    public void removeAnySkin() {
         clearPluginInfo();
         notifyChangedListeners();
     }
 
 
-
-
-    public boolean needChangeSkin()
-    {
+    public boolean needChangeSkin() {
         return usePlugin || !TextUtils.isEmpty(mSuffix);
     }
 
 
-    public ResourceManager getResourceManager()
-    {
-        if (!usePlugin)
-        {
+    public ResourceManager getResourceManager() {
+        if (!usePlugin) {
             mResourceManager = new ResourceManager(mContext.getResources(), mContext.getPackageName(), mSuffix);
         }
         return mResourceManager;
@@ -141,16 +124,14 @@ public class SkinManager
      *
      * @param suffix
      */
-    public void changeSkin(String suffix)
-    {
+    public void changeSkin(String suffix) {
         clearPluginInfo();//clear before
         mSuffix = suffix;
         mPrefUtils.putPluginSuffix(suffix);
         notifyChangedListeners();
     }
 
-    private void clearPluginInfo()
-    {
+    private void clearPluginInfo() {
         mCurPluginPath = null;
         mCurPluginPkg = null;
         usePlugin = false;
@@ -158,8 +139,7 @@ public class SkinManager
         mPrefUtils.clear();
     }
 
-    private void updatePluginInfo(String skinPluginPath, String pkgName, String suffix)
-    {
+    private void updatePluginInfo(String skinPluginPath, String pkgName, String suffix) {
         mPrefUtils.putPluginPath(skinPluginPath);
         mPrefUtils.putPluginPkg(pkgName);
         mPrefUtils.putPluginSuffix(suffix);
@@ -169,8 +149,7 @@ public class SkinManager
     }
 
 
-    public void changeSkin(final String skinPluginPath, final String pkgName, ISkinChangingCallback callback)
-    {
+    public void changeSkin(final String skinPluginPath, final String pkgName, ISkinChangingCallback callback) {
         changeSkin(skinPluginPath, pkgName, "", callback);
     }
 
@@ -183,8 +162,7 @@ public class SkinManager
      * @param suffix
      * @param callback
      */
-    public void changeSkin(final String skinPluginPath, final String pkgName, final String suffix, ISkinChangingCallback callback)
-    {
+    public void changeSkin(final String skinPluginPath, final String pkgName, final String suffix, ISkinChangingCallback callback) {
         if (callback == null)
             callback = ISkinChangingCallback.DEFAULT_SKIN_CHANGING_CALLBACK;
         final ISkinChangingCallback skinChangingCallback = callback;
@@ -192,21 +170,16 @@ public class SkinManager
         skinChangingCallback.onStart();
         checkPluginParamsThrow(skinPluginPath, pkgName);
 
-        if (skinPluginPath.equals(mCurPluginPath) && pkgName.equals(mCurPluginPkg))
-        {
+        if (skinPluginPath.equals(mCurPluginPath) && pkgName.equals(mCurPluginPkg)) {
             return;
         }
 
-        new AsyncTask<Void, Void, Void>()
-        {
+        new AsyncTask<Void, Void, Void>() {
             @Override
-            protected Void doInBackground(Void... params)
-            {
-                try
-                {
+            protected Void doInBackground(Void... params) {
+                try {
                     loadPlugin(skinPluginPath, pkgName, suffix);
-                } catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                     skinChangingCallback.onError(e);
                 }
@@ -215,15 +188,12 @@ public class SkinManager
             }
 
             @Override
-            protected void onPostExecute(Void aVoid)
-            {
-                try
-                {
+            protected void onPostExecute(Void aVoid) {
+                try {
                     updatePluginInfo(skinPluginPath, pkgName, suffix);
                     notifyChangedListeners();
                     skinChangingCallback.onComplete();
-                } catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                     skinChangingCallback.onError(e);
                 }
@@ -233,45 +203,44 @@ public class SkinManager
     }
 
 
-    public void addSkinView(ISkinChangedListener listener, List<SkinView> skinViews)
-    {
-        mSkinViewMaps.put(listener, skinViews);
+    public void addSkinView(ISkinChangedListener listener, SkinView... skinViews) {
+        List<SkinView> skinViewsList = mSkinViewMaps.get(listener);
+        if (skinViewsList == null) {
+            skinViewsList = new ArrayList<>();
+            mSkinViewMaps.put(listener, skinViewsList);
+        }
+
+        skinViewsList.addAll(Arrays.asList(skinViews));
+
     }
 
-    public List<SkinView> getSkinViews(ISkinChangedListener listener)
-    {
+    public List<SkinView> getSkinViews(ISkinChangedListener listener) {
         return mSkinViewMaps.get(listener);
     }
 
 
-    public void apply(ISkinChangedListener listener)
-    {
+    public void apply(ISkinChangedListener listener) {
         List<SkinView> skinViews = getSkinViews(listener);
 
         if (skinViews == null) return;
-        for (SkinView skinView : skinViews)
-        {
+        for (SkinView skinView : skinViews) {
             skinView.apply();
         }
     }
 
-    public void addChangedListener(ISkinChangedListener listener)
-    {
+    public void addChangedListener(ISkinChangedListener listener) {
         mSkinChangedListeners.add(listener);
     }
 
 
-    public void removeChangedListener(ISkinChangedListener listener)
-    {
+    public void removeChangedListener(ISkinChangedListener listener) {
         mSkinChangedListeners.remove(listener);
         mSkinViewMaps.remove(listener);
     }
 
 
-    public void notifyChangedListeners()
-    {
-        for (ISkinChangedListener listener : mSkinChangedListeners)
-        {
+    public void notifyChangedListeners() {
+        for (ISkinChangedListener listener : mSkinChangedListeners) {
             listener.onSkinChanged();
         }
     }
