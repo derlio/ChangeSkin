@@ -69,12 +69,12 @@ public class ResourceManager
         {
             name = appendSuffix(name);
             L.e("name = " + name);
-            return mResources.getColorStateList(mResources.getIdentifier(name, DEFTYPE_COLOR, mPluginPackageName));
+            return mResources.getColorStateList(mResources.getIdentifier(name, DEFTYPE_DRAWABLE, mPluginPackageName));
 
         } catch (Resources.NotFoundException e)
         {
             e.printStackTrace();
-            return null;
+            return mResources.getColorStateList(mResources.getIdentifier(name, DEFTYPE_COLOR, mPluginPackageName));
         }
 
     }
