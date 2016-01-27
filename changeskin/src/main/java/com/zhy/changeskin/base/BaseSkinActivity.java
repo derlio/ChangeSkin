@@ -101,16 +101,14 @@ public class BaseSkinActivity extends AppCompatActivity implements ISkinChangedL
 
     }
 
-    private void injectSkin(View view, List<SkinAttr> skinAttrList)
-    {
+    private void injectSkin(View view, List<SkinAttr> skinAttrList) {
         //do some skin inject
-        if (skinAttrList.size() != 0)
-        {
-            SkinManager.getInstance().addSkinView(this, new SkinView(view, skinAttrList));
+        if (skinAttrList.size() != 0) {
+            SkinView skinView = new SkinView(view, skinAttrList);
+            SkinManager.getInstance().addSkinView(this, skinView);
 
-            if (SkinManager.getInstance().needChangeSkin())
-            {
-                SkinManager.getInstance().apply(this);
+            if (SkinManager.getInstance().needChangeSkin()) {
+                skinView.apply();
             }
         }
     }
