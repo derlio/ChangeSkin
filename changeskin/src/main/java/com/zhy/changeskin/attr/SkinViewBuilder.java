@@ -31,6 +31,11 @@ public class SkinViewBuilder {
         return attr(attrType, SkinAttrSupport.getResourceEntryName(mContext, resId));
     }
 
+    public SkinViewBuilder reflectColorAttr(String propertyName, int resId){
+        mSkinAttrs.add(new ReflectableColorSkinAttr(propertyName, SkinAttrSupport.getResourceEntryName(mContext, resId)));
+        return this;
+    }
+
     public SkinView build(){
         return new SkinView(mView, mSkinAttrs);
     }

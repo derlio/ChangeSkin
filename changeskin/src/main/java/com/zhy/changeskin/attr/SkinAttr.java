@@ -10,6 +10,8 @@ public class SkinAttr
     String resName;
     SkinAttrType attrType;
 
+    protected SkinAttr(){}
+
 
     public SkinAttr(SkinAttrType attrType, String resName)
     {
