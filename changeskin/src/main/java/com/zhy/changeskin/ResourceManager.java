@@ -1,10 +1,12 @@
 package com.zhy.changeskin;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
+import com.zhy.changeskin.attr.SkinAttrSupport;
 import com.zhy.changeskin.utils.L;
 
 /**
@@ -48,6 +50,10 @@ public class ResourceManager
         }
     }
 
+    public Drawable getDrawableByResId(Context context, int id) {
+        return getDrawableByName(SkinAttrSupport.getResourceEntryName(context, id));
+    }
+
     public int getColor(String name)
     {
         try
@@ -64,19 +70,27 @@ public class ResourceManager
 
     }
 
+    public int getColorByResId(Context context, int id) {
+        return getColor(SkinAttrSupport.getResourceEntryName(context, id));
+    }
+
     public ColorStateList getColorStateList(String name) {
         try
         {
             name = appendSuffix(name);
             L.e("name = " + name);
-            return mResources.getColorStateList(mResources.getIdentifier(name, DEFTYPE_DRAWABLE, mPluginPackageName));
+            return mResources.getColorStateList(mResources.getIdentifier(name, DEFTYPE_COLOR, mPluginPackageName));
 
         } catch (Resources.NotFoundException e)
         {
             e.printStackTrace();
-            return mResources.getColorStateList(mResources.getIdentifier(name, DEFTYPE_COLOR, mPluginPackageName));
+            return mResources.getColorStateList(mResources.getIdentifier(name, DEFTYPE_DRAWABLE, mPluginPackageName));
         }
 
+    }
+
+    public ColorStateList getColorStateListByResId(Context context, int id) {
+        return getColorStateList(SkinAttrSupport.getResourceEntryName(context, id));
     }
 
     private String appendSuffix(String name)
