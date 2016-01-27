@@ -214,6 +214,18 @@ public class SkinManager {
 
     }
 
+    /**
+     * 只适用于动态创建的view，与addSkinView区别仅在于，此方法addSkinView调用后，直接调用skinview.apply()立马刷新view皮肤
+     * @param listener
+     * @param skinViews
+     */
+    public void dynamicAddSkinView(ISkinChangedListener listener, SkinView... skinViews) {
+        addSkinView(listener, skinViews);
+        for (SkinView view : skinViews) {
+            view.apply();
+        }
+    }
+
     public List<SkinView> getSkinViews(ISkinChangedListener listener) {
         return mSkinViewMaps.get(listener);
     }

@@ -10,7 +10,7 @@ public class SkinConfig
     public static final String KEY_PLUGIN_PKG = "key_plugin_pkg";
     public static final String KEY_PLUGIN_SUFFIX = "key_plugin_suffix";
 
-    public static final String ATTR_PREFIX="skin";
+    public static final String ATTR_PREFIX="sk";
 
 
 }

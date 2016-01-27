@@ -34,7 +34,7 @@ public class SkinAttrSupport
                     continue;
                 }
 
-                String entryName = context.getResources().getResourceEntryName(id);
+                String entryName = getResourceEntryName(context, id);
 
                 L.e("entryName = " + entryName);
                 if (entryName.startsWith(SkinConfig.ATTR_PREFIX))
@@ -46,6 +46,10 @@ public class SkinAttrSupport
         }
         return skinAttrs;
 
+    }
+
+    public static String getResourceEntryName(Context context, int id) {
+        return context.getResources().getResourceEntryName(id);
     }
 
     private static SkinAttrType getSupprotAttrType(String attrName)
