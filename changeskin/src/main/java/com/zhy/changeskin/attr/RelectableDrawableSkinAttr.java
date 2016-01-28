@@ -11,11 +11,11 @@ import java.lang.reflect.Method;
  * Created by liuzhongde
  * On 2016/01/27 11:26
  */
-public abstract class RelectableDrawableSkinAttr extends SkinAttr{
+public abstract class RelectableDrawableSkinAttr extends SkinAttr {
 
     private String propertyName;
 
-    public RelectableDrawableSkinAttr(String propertyName, String resName){
+    public RelectableDrawableSkinAttr(String propertyName, String resName) {
         this.propertyName = propertyName;
         this.resName = resName;
     }

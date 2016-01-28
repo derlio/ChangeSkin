@@ -9,11 +9,11 @@ import java.lang.reflect.Method;
 /**
  *
  */
-public class ReflectableColorSkinAttr extends SkinAttr{
+public class ReflectableColorSkinAttr extends SkinAttr {
 
     private String propertyName;
 
-    public ReflectableColorSkinAttr(String propertyName, String resName){
+    public ReflectableColorSkinAttr(String propertyName, String resName) {
         this.propertyName = propertyName;
         this.resName = resName;
     }

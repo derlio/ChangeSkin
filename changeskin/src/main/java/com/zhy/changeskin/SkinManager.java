@@ -43,14 +43,9 @@ public class SkinManager {
     private SkinManager() {
     }
 
-    private static class SingletonHolder {
-        static SkinManager sInstance = new SkinManager();
-    }
-
     public static SkinManager getInstance() {
         return SingletonHolder.sInstance;
     }
-
 
     public void init(Context context) {
         mContext = context.getApplicationContext();
@@ -78,7 +73,6 @@ public class SkinManager {
         }
     }
 
-
     private void loadPlugin(String skinPath, String skinPkgName, String suffix) throws Exception {
         //checkPluginParams(skinPath, skinPkgName);
         AssetManager assetManager = AssetManager.class.newInstance();
@@ -105,17 +99,14 @@ public class SkinManager {
         }
     }
 
-
     public void removeAnySkin() {
         clearPluginInfo();
         notifyChangedListeners();
     }
 
-
     public boolean needChangeSkin() {
         return usePlugin || !TextUtils.isEmpty(mSuffix);
     }
-
 
     public ResourceManager getResourceManager() {
         if (!usePlugin) {
@@ -123,7 +114,6 @@ public class SkinManager {
         }
         return mResourceManager;
     }
-
 
     /**
      * 应用内换肤，传入资源区别的后缀
@@ -154,11 +144,9 @@ public class SkinManager {
         mSuffix = suffix;
     }
 
-
     public void changeSkin(final String skinPluginPath, final String pkgName, ISkinChangingCallback callback) {
         changeSkin(skinPluginPath, pkgName, "", callback);
     }
-
 
     /**
      * 根据suffix选择插件内某套皮肤，默认为""
@@ -208,7 +196,6 @@ public class SkinManager {
         }.execute();
     }
 
-
     public void addSkinView(ISkinChangedListener listener, SkinView... skinViews) {
         List<SkinView> skinViewsList = mSkinViewMaps.get(listener);
         if (skinViewsList == null) {
@@ -222,6 +209,7 @@ public class SkinManager {
 
     /**
      * 只适用于动态创建的view，与addSkinView区别仅在于，此方法addSkinView调用后，直接调用skinview.apply()立马刷新view皮肤
+     *
      * @param listener
      * @param skinViews
      */
@@ -232,14 +220,13 @@ public class SkinManager {
         }
     }
 
-    public boolean isUsingPlugin(){
+    public boolean isUsingPlugin() {
         return mPrefUtils.getUsingPlugin();
     }
 
     public List<SkinView> getSkinViews(ISkinChangedListener listener) {
         return mSkinViewMaps.get(listener);
     }
-
 
     public void apply(ISkinChangedListener listener) {
         List<SkinView> skinViews = getSkinViews(listener);
@@ -254,17 +241,19 @@ public class SkinManager {
         mSkinChangedListeners.add(listener);
     }
 
-
     public void removeChangedListener(ISkinChangedListener listener) {
         mSkinChangedListeners.remove(listener);
         mSkinViewMaps.remove(listener);
     }
 
-
     public void notifyChangedListeners() {
         for (ISkinChangedListener listener : mSkinChangedListeners) {
             listener.onSkinChanged();
         }
+    }
+
+    private static class SingletonHolder {
+        static SkinManager sInstance = new SkinManager();
     }
 
 }

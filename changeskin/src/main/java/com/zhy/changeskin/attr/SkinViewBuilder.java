@@ -22,21 +22,21 @@ public class SkinViewBuilder {
         mSkinAttrs = new ArrayList<>();
     }
 
-    public SkinViewBuilder attr(SkinAttrType attrType, String resName){
+    public SkinViewBuilder attr(SkinAttrType attrType, String resName) {
         mSkinAttrs.add(new SkinAttr(attrType, resName));
         return this;
     }
 
-    public SkinViewBuilder attr(SkinAttrType attrType, int resId){
+    public SkinViewBuilder attr(SkinAttrType attrType, int resId) {
         return attr(attrType, SkinAttrSupport.getResourceEntryName(mContext, resId));
     }
 
-    public SkinViewBuilder reflectColorAttr(String propertyName, int resId){
+    public SkinViewBuilder reflectColorAttr(String propertyName, int resId) {
         mSkinAttrs.add(new ReflectableColorSkinAttr(propertyName, SkinAttrSupport.getResourceEntryName(mContext, resId)));
         return this;
     }
 
-    public SkinView build(){
+    public SkinView build() {
         return new SkinView(mView, mSkinAttrs);
     }
 }
