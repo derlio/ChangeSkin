@@ -1,7 +1,9 @@
 package com.zhy.changeskin.attr;
 
+import android.annotation.TargetApi;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -39,7 +41,7 @@ public enum SkinAttrType {
             }
 
         }
-    }, LIST_DIVIDER_COLOR("divider") {
+    }, LIST_DIVIDER("divider") {
         @Override
         public void apply(View view, String resName) {
             if (view instanceof ListView) {
@@ -48,6 +50,16 @@ public enum SkinAttrType {
                 ((ListView) view).setDivider(drawable);
                 ((ListView) view).setDividerHeight(1);
             }
+        }
+    }, ALPHA("alpha") {
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+        @Override
+        public void apply(View view, String resName) {
+            float value = getResourceManager().getFloat(resName);
+            if (value < 0 || value > 1) {
+                return;
+            }
+            view.setAlpha(value);
         }
     };
 

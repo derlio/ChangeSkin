@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.TypedValue;
 
 import com.zhy.changeskin.attr.SkinAttrSupport;
 import com.zhy.changeskin.utils.L;
@@ -82,6 +83,15 @@ public class ResourceManager {
 
     public ColorStateList getColorStateListByResId(Context context, int id) {
         return getColorStateList(SkinAttrSupport.getResourceEntryName(context, id));
+    }
+
+    public float getFloat(String name){
+        TypedValue value = new TypedValue();
+        mResources.getValue(mResources.getIdentifier(name, "integer", mPluginPackageName), value, true);
+        if (value.type == TypedValue.TYPE_NULL) {
+            return -1;
+        }
+        return value.getFloat();
     }
 
     private String appendSuffix(String name) {
