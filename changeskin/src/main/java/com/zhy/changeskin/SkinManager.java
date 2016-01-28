@@ -63,6 +63,11 @@ public class SkinManager {
             return;
         File file = new File(skinPluginPath);
         if (!file.exists()) return;
+
+        if (!mPrefUtils.getUsingPlugin()) {
+            return;
+        }
+
         try {
             loadPlugin(skinPluginPath, skinPluginPkg, mSuffix);
             mCurPluginPath = skinPluginPath;
@@ -84,6 +89,7 @@ public class SkinManager {
         mResources = new Resources(assetManager, superRes.getDisplayMetrics(), superRes.getConfiguration());
         mResourceManager = new ResourceManager(mResources, skinPkgName, suffix);
         usePlugin = true;
+        mPrefUtils.setUsingPlugin(true);
     }
 
     private boolean checkPluginParams(String skinPath, String skinPkgName) {
@@ -224,6 +230,10 @@ public class SkinManager {
         for (SkinView view : skinViews) {
             view.apply();
         }
+    }
+
+    public boolean isUsingPlugin(){
+        return mPrefUtils.getUsingPlugin();
     }
 
     public List<SkinView> getSkinViews(ISkinChangedListener listener) {
