@@ -81,7 +81,7 @@ public class SkinManager {
 
         Resources superRes = mContext.getResources();
         mResources = new Resources(assetManager, superRes.getDisplayMetrics(), superRes.getConfiguration());
-        mResourceManager = new ResourceManager(mResources, skinPkgName, suffix);
+        mResourceManager = new ResourceManager(mContext, mResources, skinPkgName, suffix);
         usePlugin = true;
         mPrefUtils.setUsingPlugin(true);
     }
@@ -110,7 +110,7 @@ public class SkinManager {
 
     public ResourceManager getResourceManager() {
         if (!usePlugin) {
-            mResourceManager = new ResourceManager(mContext.getResources(), mContext.getPackageName(), mSuffix);
+            mResourceManager = new ResourceManager(mContext, mContext.getResources(), mContext.getPackageName(), mSuffix);
         }
         return mResourceManager;
     }

@@ -16,13 +16,18 @@ import com.zhy.changeskin.utils.L;
 public class ResourceManager {
     private static final String DEFTYPE_DRAWABLE = "drawable";
     private static final String DEFTYPE_COLOR = "color";
-    private Resources mResources;
+    private Resources mPluginResources;
     private String mPluginPackageName;
     private String mSuffix;
 
+    private Resources mHostResource;
+    private String mHostPackageName;
 
-    public ResourceManager(Resources res, String pluginPackageName, String suffix) {
-        mResources = res;
+    public ResourceManager(Context context, Resources pluginResource, String pluginPackageName, String suffix) {
+        mHostPackageName = context.getPackageName();
+        mHostResource = context.getResources();
+
+        mPluginResources = pluginResource;
         mPluginPackageName = pluginPackageName;
 
         if (suffix == null) {
@@ -36,13 +41,16 @@ public class ResourceManager {
         try {
             name = appendSuffix(name);
             L.e("name = " + name);
-            return mResources.getDrawable(mResources.getIdentifier(name, DEFTYPE_DRAWABLE, mPluginPackageName));
+            return mPluginResources.getDrawable(mPluginResources.getIdentifier(name, DEFTYPE_DRAWABLE, mPluginPackageName));
         } catch (Resources.NotFoundException e) {
             try {
-                return mResources.getDrawable(mResources.getIdentifier(name, DEFTYPE_COLOR, mPluginPackageName));
+                return mPluginResources.getDrawable(mPluginResources.getIdentifier(name, DEFTYPE_COLOR, mPluginPackageName));
             } catch (Resources.NotFoundException e2) {
-                e.printStackTrace();
-                return null;
+                try {
+                    return mHostResource.getDrawable(mHostResource.getIdentifier(name, DEFTYPE_DRAWABLE, mHostPackageName));
+                } catch (Resources.NotFoundException e3) {
+                    return mHostResource.getDrawable(mHostResource.getIdentifier(name, DEFTYPE_COLOR, mHostPackageName));
+                }
             }
         }
     }
@@ -55,11 +63,9 @@ public class ResourceManager {
         try {
             name = appendSuffix(name);
             L.e("name = " + name);
-            return mResources.getColor(mResources.getIdentifier(name, DEFTYPE_COLOR, mPluginPackageName));
-
+            return mPluginResources.getColor(mPluginResources.getIdentifier(name, DEFTYPE_COLOR, mPluginPackageName));
         } catch (Resources.NotFoundException e) {
-            e.printStackTrace();
-            return -1;
+            return mHostResource.getColor(mHostResource.getIdentifier(name, DEFTYPE_COLOR, mHostPackageName));
         }
 
     }
@@ -72,11 +78,17 @@ public class ResourceManager {
         try {
             name = appendSuffix(name);
             L.e("name = " + name);
-            return mResources.getColorStateList(mResources.getIdentifier(name, DEFTYPE_COLOR, mPluginPackageName));
-
+            return mPluginResources.getColorStateList(mPluginResources.getIdentifier(name, DEFTYPE_COLOR, mPluginPackageName));
         } catch (Resources.NotFoundException e) {
-            e.printStackTrace();
-            return mResources.getColorStateList(mResources.getIdentifier(name, DEFTYPE_DRAWABLE, mPluginPackageName));
+            try {
+                return mPluginResources.getColorStateList(mPluginResources.getIdentifier(name, DEFTYPE_DRAWABLE, mPluginPackageName));
+            } catch (Resources.NotFoundException e2) {
+                try{
+                    return mHostResource.getColorStateList(mHostResource.getIdentifier(name, DEFTYPE_COLOR, mHostPackageName));
+                }catch (Resources.NotFoundException e3){
+                    return mHostResource.getColorStateList(mHostResource.getIdentifier(name, DEFTYPE_DRAWABLE, mHostPackageName));
+                }
+            }
         }
 
     }
@@ -87,7 +99,10 @@ public class ResourceManager {
 
     public float getFloat(String name){
         TypedValue value = new TypedValue();
-        mResources.getValue(mResources.getIdentifier(name, "integer", mPluginPackageName), value, true);
+        mPluginResources.getValue(mPluginResources.getIdentifier(name, "integer", mPluginPackageName), value, true);
+        if (value.type == TypedValue.TYPE_NULL) {
+            mHostResource.getValue(mHostResource.getIdentifier(name, "integer", mHostPackageName), value, true);
+        }
         if (value.type == TypedValue.TYPE_NULL) {
             return -1;
         }
