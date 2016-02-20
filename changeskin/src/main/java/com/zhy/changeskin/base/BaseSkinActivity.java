@@ -20,7 +20,6 @@ import com.zhy.changeskin.attr.SkinView;
 import com.zhy.changeskin.callback.ISkinChangedListener;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -40,25 +39,25 @@ public class BaseSkinActivity extends AppCompatActivity implements ISkinChangedL
     @Override
     public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
 
-        LayoutInflater layoutInflater = getLayoutInflater();
+//        LayoutInflater layoutInflater = getLayoutInflater();
         AppCompatDelegate delegate = getDelegate();
-        View view = null;
-        try {
-            //public View createView
-            // (View parent, final String name, @NonNull Context context, @NonNull AttributeSet attrs)
-            if (sCreateViewMethod == null) {
-                Method methodOnCreateView = delegate.getClass().getMethod("createView", sCreateViewSignature);
-                sCreateViewMethod = methodOnCreateView;
-            }
-            Object object = sCreateViewMethod.invoke(delegate, parent, name, context, attrs);
-            view = (View) object;
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        View view = delegate.createView(parent, name, context, attrs);
+//        try {
+//            //public View createView
+//            // (View parent, final String name, @NonNull Context context, @NonNull AttributeSet attrs)
+//            if (sCreateViewMethod == null) {
+//                Method methodOnCreateView = delegate.getClass().getMethod("createView", sCreateViewSignature);
+//                sCreateViewMethod = methodOnCreateView;
+//            }
+//            Object object = sCreateViewMethod.invoke(delegate, parent, name, context, attrs);
+//            view = (View) object;
+//        } catch (NoSuchMethodException e) {
+//            e.printStackTrace();
+//        } catch (InvocationTargetException e) {
+//            e.printStackTrace();
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        }
 
 //        if ("fragment".equals(name))
 //        {

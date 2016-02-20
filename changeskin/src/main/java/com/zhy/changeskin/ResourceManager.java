@@ -49,6 +49,7 @@ public class ResourceManager {
                 try {
                     return mHostResource.getDrawable(mHostResource.getIdentifier(name, DEFTYPE_DRAWABLE, mHostPackageName));
                 } catch (Resources.NotFoundException e3) {
+                    e3.printStackTrace();
                     return mHostResource.getDrawable(mHostResource.getIdentifier(name, DEFTYPE_COLOR, mHostPackageName));
                 }
             }
