@@ -61,6 +61,14 @@ public enum SkinAttrType {
             }
             view.setAlpha(value);
         }
+    }, LIST_SELECTOR("listSelector") {
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+        @Override
+        public void apply(View view, String resName) {
+            Drawable drawable = getResourceManager().getDrawableByName(resName);
+            if (drawable == null) return;
+            ((ListView) view).setSelector(drawable);
+        }
     };
 
     String attrType;
