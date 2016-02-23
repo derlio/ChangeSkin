@@ -24,12 +24,19 @@ public enum SkinAttrType {
             if (drawable == null) return;
             view.setBackgroundDrawable(drawable);
         }
-    }, COLOR("textColor") {
+    }, TEXT_COLOR("textColor") {
         @Override
         public void apply(View view, String resName) {
             ColorStateList colorlist = getResourceManager().getColorStateList(resName);
             if (colorlist == null) return;
             ((TextView) view).setTextColor(colorlist);
+        }
+    }, TEXT_COLOR_HINT("textColorHint") {
+        @Override
+        public void apply(View view, String resName) {
+            ColorStateList colorlist = getResourceManager().getColorStateList(resName);
+            if (colorlist == null) return;
+            ((TextView) view).setHintTextColor(colorlist);
         }
     }, SRC("src") {
         @Override
