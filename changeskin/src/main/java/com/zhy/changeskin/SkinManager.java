@@ -5,6 +5,8 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.zhy.changeskin.attr.SkinView;
 import com.zhy.changeskin.callback.ISkinChangedListener;
@@ -14,8 +16,8 @@ import com.zhy.changeskin.utils.PrefUtils;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +41,7 @@ public class SkinManager {
 
     private Map<ISkinChangedListener, List<SkinView>> mSkinViewMaps = new HashMap<ISkinChangedListener, List<SkinView>>();
     private List<ISkinChangedListener> mSkinChangedListeners = new ArrayList<ISkinChangedListener>();
+    private HashSet<Integer> mSkinViewIds = new HashSet<>();
 
     private SkinManager() {
     }
@@ -203,10 +206,49 @@ public class SkinManager {
             mSkinViewMaps.put(listener, skinViewsList);
         }
 
-        skinViewsList.addAll(Arrays.asList(skinViews));
-
+        for (SkinView skinView : skinViews) {
+            if (skinView.view != null) {
+                mSkinViewIds.add(skinView.view.hashCode());
+                skinViewsList.add(skinView);
+            }
+        }
     }
 
+    public void removeSkinView(ISkinChangedListener listener, View view){
+        removeSkinViewInternal(listener, view);
+        if(view instanceof ViewGroup) {
+            ViewGroup parent = (ViewGroup) view;
+            int childCount = parent.getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                removeSkinView(listener, parent.getChildAt(i));
+            }
+        }
+    }
+
+    private void removeSkinViewInternal(ISkinChangedListener listener, View view){
+
+        if(view == null || !mSkinViewIds.contains(view.hashCode())){
+            return;
+        }
+
+        List<SkinView> skinViewList = mSkinViewMaps.get(listener);
+        if (skinViewList != null) {
+            int len = skinViewList.size();
+            int index = -1;
+            for(int i=0; i<len; i++) {
+                SkinView skinView = skinViewList.get(i);
+                if (view.equals(skinView.view)) {
+                    index = i;
+                    mSkinViewIds.remove(skinView.view.hashCode());
+                    break;
+                }
+            }
+            if (index != -1) {
+                SkinView skinView = skinViewList.remove(index);
+                skinView.view = null;
+            }
+        }
+    }
     /**
      * 只适用于动态创建的view，与addSkinView区别仅在于，此方法addSkinView调用后，直接调用skinview.apply()立马刷新view皮肤
      *

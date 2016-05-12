@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class SkinView {
     //    SoftReference<View> viewRef;
-    View view;
+    public View view;
     List<SkinAttr> attrs;
 
     public SkinView(View view, List<SkinAttr> skinAttrs) {
